@@ -1,0 +1,25 @@
+import cv2
+import numpy as np
+
+f = open('lab1_test.txt', 'r')
+dic = {}
+print()
+for i in range(0, 2):
+    temp = f.readline().split()
+    for j in temp:
+        if j in dic:
+            dic[j] += 1
+        else:
+            dic[j] = 1
+    print(dic)
+    print(dic.keys())
+    dic.clear()
+
+
+
+    #print("[", end='')
+    #for key in dic:
+    #    print("'{}'".format(key), end='')
+    #print("]")
+
+
