@@ -1,0 +1,35 @@
+import numpy as np
+
+iris = np.loadtxt('lab2_iris.csv', delimiter=',')
+
+#다른 여러 데이터 시트에서도 동작하도록 해야함
+#클래스 개수를 카운트 할 때 dictionary를 이용?    -> x 없이도 가능하도록
+#
+#print(iris)
+print(np.sum(iris, axis = 0))   #각 클래스의 평균을 구할 때 사용
+
+#print(iris[0:, 4:]) #클래스에 해당되는 튜플만 출력
+#print(iris[0:, 4:])
+#print(   list(iris[0:, 4:]) )
+print("number of samples :", iris.shape[0])       #전체 개수
+print("number of class : ", int(iris[iris[0:, 4:].argmax(), 4]))       #클래스 개수
+
+
+
+for i in range(1, int(iris[iris[0:, 4:].argmax(), 4]) + 1):    #클래스 개수가 들어가야함
+    print("======================================================")
+    #print("Number of samples in class {0} : {1}".format(i, np.take(iris[0:,0], np.where(iris[0:, 4] == i)).size))
+    #print("Avg vector in class {} : {}".format(i, np.take(iris[0:,0], np.where(iris[0:, 4] == 1)).mean))
+    #print("Standard Deviation in class {} : {}".format(   ))
+
+
+#print(np.take(iris[0:,0], np.where(iris[0:, 4] == 1)).sum())
+#print(np.take(iris[0:,0], np.where(iris[0:, 4] == 2)).sum())
+#print(np.take(iris[0:,0], np.where(iris[0:, 4] == 3)).sum())
+
+
+
+#print("aaaaaa")
+
+
+#print(np.take(iris[0:,0], np.where(iris[0:, 4] == 1)).size)
