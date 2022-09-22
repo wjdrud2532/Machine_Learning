@@ -1,0 +1,41 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('lab3_test.csv', index_col = 0)
+
+x1 = df[' Iris-setosa']
+x2 = df[' Iris-versicolor']
+
+y1 = df[' Iris-setosa']
+y2 = df[' Iris-versicolor']
+
+z1 = df['Iris-virginica']
+z2 = df['Iris-virginica']
+
+plt.rcParams['figure.figsize'] = [10, 5]
+
+plt.subplot(1, 2, 1) 
+plt.plot('petal_length', 'petal_width', data=iris, linestyle='none', marker='o', markersize=10, color='blue', alpha=0.5)
+
+plt.title('Figure 1', fontsize=10)
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+
+plt.subplot(1, 2, 2)  
+plt.plot(x2, y2)
+plt.title('Figure 2', fontsize=10)
+plt.xlabel('Petal Length', fontsize=14)
+plt.ylabel('Petal Width', fontsize=14)
+
+plt.show()
+
+
+df = pd.read_csv('lab3_test.csv', index_col = 0)
+
+
+#df
+
+df[df['petal length'] == '1.5']
+
+df
