@@ -2,40 +2,45 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('lab3_test.csv', index_col = 0)
+df = pd.read_csv('lab3_test.csv', names=[1, 2, 3, 4, 5] )
 
-x1 = df[' Iris-setosa']
-x2 = df[' Iris-versicolor']
+x1 = pd.DataFrame(df[  df[5] == 'Iris-setosa'  ][1]).values.tolist()
+x2 = pd.DataFrame(df[  df[5] == 'Iris-setosa'  ][2]).values.tolist()
 
-y1 = df[' Iris-setosa']
-y2 = df[' Iris-versicolor']
+y1 = pd.DataFrame(df[  df[5] == 'Iris-versicolor'  ][1]).values.tolist()
+y2 = pd.DataFrame(df[  df[5] == 'Iris-versicolor'  ][2]).values.tolist()
 
-z1 = df['Iris-virginica']
-z2 = df['Iris-virginica']
+z1 = pd.DataFrame(df[  df[5] == 'Iris-virginica'  ][1]).values.tolist()
+z2 = pd.DataFrame(df[  df[5] == 'Iris-virginica'  ][2]).values.tolist()
 
+x3 = pd.DataFrame(df[  df[5] == 'Iris-setosa'  ][3]).values.tolist()
+x4 = pd.DataFrame(df[  df[5] == 'Iris-setosa'  ][4]).values.tolist()
+
+y3 = pd.DataFrame(df[  df[5] == 'Iris-versicolor'  ][3]).values.tolist()
+y4 = pd.DataFrame(df[  df[5] == 'Iris-versicolor'  ][4]).values.tolist()
+
+z3 = pd.DataFrame(df[  df[5] == 'Iris-virginica'  ][3]).values.tolist()
+z4 = pd.DataFrame(df[  df[5] == 'Iris-virginica'  ][4]).values.tolist()
+
+plt.subplot(1, 2, 1)
 plt.rcParams['figure.figsize'] = [10, 5]
+plt.scatter(x1, x2, color='blue', label = 'lris-setosa')
+plt.scatter(y1, y2, color='orange', label = 'lris-versicolor')
+plt.scatter(z1, z2, color='green', label = 'lris-virginica')
 
-plt.subplot(1, 2, 1) 
-plt.plot('petal_length', 'petal_width', data=iris, linestyle='none', marker='o', markersize=10, color='blue', alpha=0.5)
-
-plt.title('Figure 1', fontsize=10)
+plt.title('Figure 1')
 plt.xlabel('Sepal Length')
 plt.ylabel('Sepal Width')
+plt.legend(loc='upper right')
 
 plt.subplot(1, 2, 2)  
-plt.plot(x2, y2)
-plt.title('Figure 2', fontsize=10)
-plt.xlabel('Petal Length', fontsize=14)
-plt.ylabel('Petal Width', fontsize=14)
+plt.rcParams['figure.figsize'] = [10, 5]
+plt.scatter(x3, x4, color='blue', label = 'lris-setosa')
+plt.scatter(y3, y4, color='orange', label = 'lris-versicolor')
+plt.scatter(z3, z4, color='green', label = 'lris-virginica')
+plt.title('Figure 2')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
 
+plt.legend(loc='upper left')
 plt.show()
-
-
-df = pd.read_csv('lab3_test.csv', index_col = 0)
-
-
-#df
-
-df[df['petal length'] == '1.5']
-
-df
