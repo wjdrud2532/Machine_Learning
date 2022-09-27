@@ -1,0 +1,20 @@
+import numpy as np
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+
+df = pd.read_csv('lab4_test.csv', index_col = 0)
+
+#print(df.shape)
+#print(df.info())
+#print(df.describe())
+
+#trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(scaled_features, labels, test_size=0.3, shuffle=True, random_state=1)
+
+clf = KNeighborsClassifier(n_neighbors=3)
+clf.fit(trn_feats, trn_labels)
+#피처와 라벨 잘 구별해서 학습 시켜야함
+#학습 fit
+
+KNeighborsClassifier(n_neighbors=3)
+
+print(clf.score(valid_feats, valid_labels))
