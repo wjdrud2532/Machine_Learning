@@ -2,53 +2,60 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 df = pd.read_csv('lab4_test.csv')
 
-#train, test = train_test_split(df, test_size=0.3)
-
 labels = pd.DataFrame(df['label'])
-features = pd.DataFrame(df[['sepal length','sepal width','petal length','petal width']])
+features = pd.DataFrame(df[['sepal length','sepal width',
+                            'petal length','petal width']])
 
-#labels
-#features
+StandScaler = StandardScaler()
+StandScaler_features = StandScaler.fit_transform(features)
 
-#데이터 정규화
-scaler = MinMaxScaler()
-scaled_features = scaler.fit_transform(features)
+trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(features, 
+                                                                    labels, 
+                                                                    test_size=0.3, 
+                                                                    shuffle=True,
+                                                                    random_state=4)
 
-#정규화 전
-#print((pd.DataFrame(features)).describe())
-
-#정규화 후
-#(pd.DataFrame(scaled_features)).describe()
-
-
-#정규화 된 값 사용
-#trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(scaled_features, labels, test_size=0.3, shuffle=True, random_state=4)
-
-#정규화 되지 않은 값을 사용하면 정확도가 0.6까지 내려간다
-trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(features, labels, test_size=0.3, shuffle=True, random_state=4)
-
-#train 과 test의 split는 잘 나뉜다
-print(trn_feats.shape)
-print(valid_feats.shape)
-print(trn_labels.shape)
-print(valid_labels.shape)
-
-
-#정규화 된 데이터를 사용할 경우 k의 개수에 따른 변화가 이뤄지지 않는다
-#정구화 안된 데이터를 사용할 때 유의미하게 변한다
+print("정규화 전")
+clf = KNeighborsClassifier(n_neighbors=1)
+clf.fit(trn_feats, trn_labels)
+print("k = 1  : ", clf.score(valid_feats, valid_labels))
 
 clf = KNeighborsClassifier(n_neighbors=3)
 clf.fit(trn_feats, trn_labels)
+print("k = 3  : ", clf.score(valid_feats, valid_labels))
 
-KNeighborsClassifier(n_neighbors=3)
-#정규화 되지 않은 값을 사용할 때 2와 8일 때 0.77로 가장 값이 크게 나온다
-#그리고 3일 때 가장 작은 적은 적중률을 가진다
-#위의 k와 아래의 k값이 어떻게 다른거지? ----
+clf = KNeighborsClassifier(n_neighbors=5)
+clf.fit(trn_feats, trn_labels)
+print("k = 5  : ", clf.score(valid_feats, valid_labels))
 
-print(clf.score(valid_feats, valid_labels))
+clf = KNeighborsClassifier(n_neighbors=10)
+clf.fit(trn_feats, trn_labels)
+print("k = 10 : ", clf.score(valid_feats, valid_labels))
 
-trn_feats
+print()
+print("정규화 후")
+
+trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(StandScaler_features, 
+                                                                    labels, test_size=0.3, 
+                                                                    shuffle=True, 
+                                                                    random_state=4)
+
+clf = KNeighborsClassifier(n_neighbors=1)
+clf.fit(trn_feats, trn_labels)
+print("k = 1  : ", clf.score(valid_feats, valid_labels))
+
+clf = KNeighborsClassifier(n_neighbors=3)
+clf.fit(trn_feats, trn_labels)
+print("k = 3  : ", clf.score(valid_feats, valid_labels))
+
+clf = KNeighborsClassifier(n_neighbors=5)
+clf.fit(trn_feats, trn_labels)
+print("k = 5  : ", clf.score(valid_feats, valid_labels))
+
+clf = KNeighborsClassifier(n_neighbors=10)
+clf.fit(trn_feats, trn_labels)
+print("k = 10 : ", clf.score(valid_feats, valid_labels))
