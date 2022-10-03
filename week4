@@ -15,9 +15,9 @@ StandScaler_features = StandScaler.fit_transform(features)
 
 trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(features, 
                                                                     labels, 
-                                                                    test_size=0.3, 
+                                                                    test_size=0.25, 
                                                                     shuffle=True,
-                                                                    random_state=4)
+                                                                    random_state=1)
 
 print("정규화 전")
 clf = KNeighborsClassifier(n_neighbors=1)
@@ -40,9 +40,9 @@ print()
 print("정규화 후")
 
 trn_feats, valid_feats, trn_labels, valid_labels = train_test_split(StandScaler_features, 
-                                                                    labels, test_size=0.3, 
+                                                                    labels, test_size=0.25, 
                                                                     shuffle=True, 
-                                                                    random_state=4)
+                                                                    random_state=1)
 
 clf = KNeighborsClassifier(n_neighbors=1)
 clf.fit(trn_feats, trn_labels)
