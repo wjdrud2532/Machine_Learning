@@ -1,0 +1,81 @@
+import numpy as np
+import pandas as pd
+from pandas import DataFrame, Series
+from IPython.display import Image
+from io import StringIO
+import pydotplus
+from sklearn import preprocessing
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.model_selection import train_test_split # Import train_test_split function
+from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_moons
+from sklearn.metrics import accuracy_score
+
+df = pd.read_csv('tic-tac-toe.csv')
+
+#data
+df['V1'],v1 = pd.factorize(df['top-left-square'], sort=True)
+df['V2'],v2 = pd.factorize(df['top-middle-square'], sort=True)
+df['V3'],v3 = pd.factorize(df['top-right-square'], sort=True)
+df['V4'],v4 = pd.factorize(df['middle-left-square'], sort=True)
+df['V5'],v5 = pd.factorize(df['middle-middle-square'], sort=True)
+df['V6'],v6 = pd.factorize(df['middle-right-square'], sort=True)
+df['V7'],v7 = pd.factorize(df['bottom-left-square'], sort=True)
+df['V8'],v8 = pd.factorize(df['bottom-middle-square'], sort=True)
+df['V9'],v9 = pd.factorize(df['bottom-right-square'], sort=True)
+df['V10'],v10 = pd.factorize(df['Class'], sort=True)
+
+class_names = [v10[0], v10[1]]
+
+feature_names = ['V1','V2','V3','V4', 'V5', 'V6', 'V7', 'V8', 'V9']
+x_train = df[feature_names] # Features
+y_train = df['V10'] # Target
+
+clf = DecisionTreeClassifier(criterion='entropy')
+clf = clf.fit(x_train, y_train)
+
+accuracy_average = 0.0
+
+for ran_value in range(0,11):
+    x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.25, random_state=0)
+
+    clf = DecisionTreeClassifier(criterion='entropy', min_samples_split=80) # change this classifier and check the impact
+    clf = clf.fit(x_train,y_train)
+    
+    y_pred = clf.predict(x_test)
+    # how did our model perform?
+    #count_misclassified = (y_test != y_pred).sum()
+    #print('Misclassified samples: {}'.format(count_misclassified))
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    print('random_state = ', ran_value, '\nAccuracy: {:.2f}%'.format(accuracy * 100))
+    accuracy_average += accuracy
+    print()
+
+print('10개 트리의 평균 정확도 = {:.2f}%'.format((accuracy_average / 10) * 100 ))
+print()
+
+#rf = RandomForestClassifier(random_state=0)
+rf=RandomForestClassifier(n_estimators=1, 
+                          max_depth=2, 
+                          random_state=0)
+'''
+92.31
+rf=RandomForestClassifier(n_estimators=1, 
+                          max_depth=2, 
+                          min_samples_leaf=2,
+                          min_samples_split=2, 
+                          random_state=0)
+'''
+rf.fit(x_train,y_train)
+pred = rf.predict(x_test)
+accuracy = accuracy_score(y_test,pred)
+
+print('RandomForestClassifier의 accuracy = {:.2f}%'.format(accuracy * 100))
+
+
+
+
+
+
