@@ -1,0 +1,213 @@
+import numpy as np
+import pandas as pd
+from functools import reduce
+from sklearn.model_selection import train_test_split
+
+
+def entro(Y=None, pro=None):# calculating entropy
+
+    if Y is not None:
+        pro = sum(Y == 1) / len(Y)
+    if pro == 0 or pro == 1:
+        return 0
+    return -pro*np.log2(pro) - (1-pro)*np.log2(1-pro)
+
+
+
+def finalgain(X, Y, A, cnt):# calculating information gain
+
+    c = feature_names2[cnt]
+    print("부모 엔트로피 : ", entro(Y))
+    print("지니 인덱스 : ", get_gini(df, c))
+    print("정보 이득 : ", entro(Y) - get_gini(df, c), "\n")
+    return entro(Y) - get_gini(df, c)
+
+
+def infogain(X, Y, A, cnt):
+        
+    #print("정보이득 = ", finalgain(X, Y, A, cnt), '\')
+    return finalgain(X, Y, A, cnt)
+
+class DecisionTreeClassifieraaa:
+
+    class leaf:
+        def __init__(self, p=None):
+           
+            self.p = p
+            self.A = None
+            self.c = {}
+            self.posi = None
+            self.negi = None
+
+        def __repr__(self):
+            return f"({self.posi}+, {self.negi}-)"
+    
+    def __init__(self,m_depth):
+        self.m_depth=m_depth
+
+
+    def fitter(self, X, Y, sample_weights=None):
+        if sample_weights is None:
+            sample_weights = np.ones(len(Y))/len(Y)
+        self.mainr = self.leaf()
+        #print(self.mainr)
+        self.btree(self.mainr, X, Y, set(), depth=1)    
+
+
+    def prediction(self, x):
+        assert hasattr(self, 'mainr'), "not trained yet"
+        n = self.mainr
+        while n.c:
+            try:
+                n = n.c[x[n.A]]
+            except KeyError:
+                break
+        return int(n.posi > n.negi)
+
+    def error(self, X, Y):
+        e = np.array([self.prediction(x) for x in X])
+        return print('Accuracy: {:.2f}'.format(sum(e != Y) / len(Y) * 100))
+
+    def btree(self, mainr, X, Y, attribute, depth):
+        X, Y, attribute = X.copy(), Y.copy(), attribute.copy()
+        mainr.posi = sum(Y == 1)
+        mainr.negi = len(Y) - mainr.posi
+        if mainr.posi == 0 or mainr.negi == 0:
+            return
+        if depth <= self.m_depth:
+            mainr.A = self.bestfeature(X, Y, attribute)
+            attribute.add(mainr.A)
+            #print(attribute)
+            if mainr.A is None:
+                return
+            for a in set(X[:, mainr.A]):
+                mainr.c[a] = self.leaf(p=mainr)
+                self.btree(mainr.c[a],
+                                 X[X[:, mainr.A] == a],
+                                 Y[X[:, mainr.A] == a],
+                                 attribute,
+                                 depth+1)
+
+    def bestfeature(self, X, Y, zat):
+        
+        best_gain, best_feature = 0, None
+        #print(self)
+        cnt = 0
+        for A in range(X.shape[1]):
+        
+            if A in zat:
+                continue
+            gain = infogain(X, Y, A, cnt)
+            cnt += 1
+            if gain > best_gain:
+                best_gain = gain
+                best_feature = A
+        return best_feature
+
+
+    def show_tree(self):
+        self.treeprint(self.mainr, depth=1)
+
+    def treeprint(self, mainr, depth):
+        print(mainr)
+        for k, v in mainr.c.items():
+            print("\t"*(depth+1) + f"Node:[x{mainr.A+1} = {k}] ", end='')
+            self.treeprint(v, depth+1)
+
+    
+    
+df = pd.read_csv('tic-tac-toe.csv')
+
+#target
+labels = pd.DataFrame(df['Class'])
+
+#data
+features = pd.DataFrame(df[['top-left-square','top-middle-square','top-right-square',
+                           'middle-left-square','middle-middle-square','middle-right-square',
+                           'bottom-left-square','bottom-middle-square','bottom-right-square']])
+
+
+df['V1'],v1 = pd.factorize(df['top-left-square'], sort=True)
+df['V2'],v2 = pd.factorize(df['top-middle-square'], sort=True)
+df['V3'],v3 = pd.factorize(df['top-right-square'], sort=True)
+df['V4'],v4 = pd.factorize(df['middle-left-square'], sort=True)
+df['V5'],v5 = pd.factorize(df['middle-middle-square'], sort=True)
+df['V6'],v6 = pd.factorize(df['middle-right-square'], sort=True)
+df['V7'],v7 = pd.factorize(df['bottom-left-square'], sort=True)
+df['V8'],v8 = pd.factorize(df['bottom-middle-square'], sort=True)
+df['V9'],v9 = pd.factorize(df['bottom-right-square'], sort=True)
+df['V10'],v10 = pd.factorize(df['Class'], sort=True)
+
+
+class_names = [v10[0], v10[1]]
+feature_names = ['V1','V2','V3','V4', 'V5', 'V6', 'V7', 'V8', 'V9']
+feature_names2 = ['V1','V2','V3','V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
+x_train1 = df[feature_names2] # Features3#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+x_train2 = np.asarray(x_train1)
+
+x_train11 = df[feature_names] 
+x_train22 = np.asarray(x_train11)
+
+y_train1 = df['V10'] # Target
+y_train2 = np.asarray(y_train1)
+
+#print(x_train2)
+#print(y_train2)
+
+x_train3, x_test3, y_train3, y_test3 = train_test_split(x_train22, y_train2, test_size=0.25, random_state=1)
+
+t = DecisionTreeClassifieraaa(m_depth=1)
+m = t.fitter(x_train3, y_train3)
+
+t.error(x_test3, y_test3)
+print()
+t.show_tree()
+
+def get_gini(df, label):
+    D_len = df[label].count()
+    count_arr = (value for key, value in df[label].value_counts().items())
+    #print(label, "의 gini 계수 = ", reduce(lambda x, y: x - (y/D_len)**2 ,count_arr,1))
+    return reduce(lambda x, y: x - (y/D_len)**2 ,count_arr,1)
+
+
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
+
+import numpy as np
+import pandas as pd
+from pandas import DataFrame, Series
+from IPython.display import Image
+from io import StringIO
+import pydotplus
+from sklearn import preprocessing
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.model_selection import train_test_split # Import train_test_split function
+from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
+
+x_train3, x_test3, y_train3, y_test3 = train_test_split(x_train22, y_train2, test_size=0.25, random_state=1)
+
+def plot_decision_tree(clf, features, classes):
+    dot_data = StringIO()
+    tree.export_graphviz(clf, out_file=dot_data, feature_names=features, class_names=classes, filled=True, rounded=True, special_characters=True)
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+    return Image(graph.create_png())
+#, criterion='entropy'
+clf = DecisionTreeClassifier(max_depth = 1, criterion='entropy')
+clf = clf.fit(x_train3, y_train3)
+
+y_pred = clf.predict(x_test3)
+
+count_misclassified = (y_test3 != y_pred).sum()
+print('Misclassified samples: {}'.format(count_misclassified))
+accuracy = metrics.accuracy_score(y_test3, y_pred)
+print('Accuracy: {:.2f}'.format(accuracy*100))
+plot_decision_tree(clf, feature_names, class_names)
+
+
+
+
+    
+    
+    
